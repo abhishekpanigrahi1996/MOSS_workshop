@@ -1226,80 +1226,85 @@ const topicSummaries = {
 };
 
 export default function PaperBrowser() {
-  const [query, setQuery] = useState("");
-  const [openAbstract, setOpenAbstract] = useState(null);
-
-  const topics = [...new Set(papers.map(p => p.topic))];
-  const filtered = papers.filter(paper =>
-    paper.title.toLowerCase().includes(query.toLowerCase()) ||
-    paper.authors.some(a => a.toLowerCase().includes(query.toLowerCase())) ||
-    paper.keywords.some(k => k.toLowerCase().includes(query.toLowerCase()))
-  );
-
-  return (
-    <div className="p-6 max-w-5xl mx-auto w-full">
-      <h1 className="text-2xl font-bold mb-4">MOSS 2025 Accepted Papers</h1>
-      <Input
-        placeholder="Search by title, author, keyword..."
-        className="mb-6"
-        value={query}
-        onChange={(e) => setQuery(e.target.value)}
-      />
-
-      <div className="mb-6">
-        <h2 className="text-lg font-semibold mb-2">Topics</h2>
-        <ul className="list-disc pl-5 space-y-1">
-          {topics.map(topic => (
-            <li key={topic}>
-              <a href={`#${topic.replace(/\s+/g, "-")}`} className="text-blue-600 hover:underline">
-                {topic}
-              </a>
-              <span className="text-sm text-gray-600 ml-2">– {topicSummaries[topic]}</span>
-            </li>
-          ))}
-        </ul>
-      </div>
-
-      {topics.map(topic => (
-        <div key={topic} id={topic.replace(/\s+/g, "-")} className="mb-8">
-          <h2 className="text-xl font-semibold mb-3">{topic}</h2>
-          <p className="text-sm text-gray-600 mb-4">{topicSummaries[topic]}</p>
-          <div className="grid gap-4">
-            {filtered.filter(p => p.topic === topic).map(paper => (
-              <Card key={paper.id}>
-                <div className="flex flex-col gap-2">
-                  <div className="flex justify-between items-start">
-                    <div className="w-full">
-                      <a
-                        href={paper.url}
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        className="text-lg font-semibold text-blue-600 hover:underline"
-                      >
-                        {paper.title}
-                      </a>
-                      <p className="text-sm text-gray-700">{paper.authors.join(", ")}</p>
-                      <p className="text-sm text-gray-600 italic">{paper.tldr}</p>
-                      <p className="text-xs text-gray-500">Keywords: {paper.keywords.join(", ")}</p>
-                    </div>
-                    <div className="ml-4">
-                      <button
-                        onClick={() => setOpenAbstract(openAbstract === paper.id ? null : paper.id)}
-                        className="text-sm text-blue-500 hover:underline whitespace-nowrap"
-                      >
-                        {openAbstract === paper.id ? "Hide Abstract" : "Show Abstract"}
-                      </button>
-                    </div>
-                  </div>
-                  {openAbstract === paper.id && (
-                    <p className="text-sm text-gray-800 border-t pt-2">{paper.abstract}</p>
-                  )}
+    const [query, setQuery] = useState("");
+    const [openAbstract, setOpenAbstract] = useState(null);
+  
+    const topics = [...new Set(papers.map(p => p.topic))];
+    const filtered = papers.filter(paper =>
+      paper.title.toLowerCase().includes(query.toLowerCase()) ||
+      paper.authors.some(a => a.toLowerCase().includes(query.toLowerCase())) ||
+      paper.keywords.some(k => k.toLowerCase().includes(query.toLowerCase()))
+    );
+  
+    return (
+      <div className="p-6 max-w-5xl mx-auto w-full">
+        <h1 className="text-2xl font-bold mb-4">MOSS 2025 Accepted Papers</h1>
+        <Input
+          placeholder="Search by title, author, keyword..."
+          className="mb-6"
+          value={query}
+          onChange={(e) => setQuery(e.target.value)}
+        />
+  
+        <div className="mb-6">
+          <h2 className="text-lg font-semibold mb-2">Topics</h2>
+          <ul className="space-y-2 ml-2">
+            {topics.map(topic => (
+              <li key={topic} className="flex items-start gap-2">
+                <span className="mt-1 w-2 h-2 rounded-full bg-black"></span>
+                <div>
+                  <a href={`#${topic.replace(/\s+/g, "-")}`} className="text-blue-600 font-medium hover:underline">
+                    {topic}
+                  </a>
+                  <div className="text-sm text-gray-600">{topicSummaries[topic]}</div>
                 </div>
-              </Card>
+              </li>
             ))}
-          </div>
+          </ul>
         </div>
-      ))}
-    </div>
-  );
-}
+  
+        {topics.map(topic => (
+          <div key={topic} id={topic.replace(/\s+/g, "-")} className="mb-8">
+            <h2 className="text-xl font-semibold mb-3">{topic}</h2>
+            <p className="text-sm text-gray-600 mb-4">{topicSummaries[topic]}</p>
+            <ul className="list-disc list-inside ml-6 space-y-4">
+              {filtered.filter(p => p.topic === topic).map(paper => (
+                <li key={paper.id}>
+                  <Card>
+                    <div className="flex flex-col gap-2">
+                      <div className="flex justify-between items-start">
+                        <div className="w-full">
+                          <a
+                            href={paper.url}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            className="text-lg font-semibold text-blue-600 hover:underline"
+                          >
+                            {paper.title}
+                          </a>
+                          <p className="text-sm text-gray-700">{paper.authors.join(", ")}</p>
+                          <p className="text-sm text-gray-600 italic">{paper.tldr}</p>
+                          <p className="text-xs text-gray-500">Keywords: {paper.keywords.join(", ")}</p>
+                        </div>
+                        <div className="ml-4">
+                          <button
+                            onClick={() => setOpenAbstract(openAbstract === paper.id ? null : paper.id)}
+                            className="text-sm text-blue-500 hover:underline whitespace-nowrap"
+                          >
+                            {openAbstract === paper.id ? "Hide Abstract" : "Show Abstract"}
+                          </button>
+                        </div>
+                      </div>
+                      {openAbstract === paper.id && (
+                        <p className="text-sm text-gray-800 border-t pt-2">{paper.abstract}</p>
+                      )}
+                    </div>
+                  </Card>
+                </li>
+              ))}
+            </ul>
+          </div>
+        ))}
+      </div>
+    );
+  }
