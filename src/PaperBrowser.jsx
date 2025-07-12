@@ -1248,6 +1248,7 @@ export default function PaperBrowser() {
     return (
       <div className="p-6 max-w-5xl mx-auto w-full">
         <h1 className="text-2xl font-bold mb-4">MOSS 2025 Accepted Papers</h1>
+        This webpage presents all accepted papers at the MOSS 2025 Workshop. The papers are grouped into topical clusters for easier navigation. We also provide keywords for each paper, which you can use to navigate to the corresponding paper. You can:
   
         <ul className="text-sm text-gray-700 mb-6 list-disc list-inside space-y-1">
           <li>Click on any topic listed below to jump directly to the corresponding set of papers.</li>
