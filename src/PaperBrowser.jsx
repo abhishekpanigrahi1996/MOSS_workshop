@@ -1248,16 +1248,17 @@ export default function PaperBrowser() {
     return (
       <div className="p-6 max-w-5xl mx-auto w-full">
         <h1 className="text-2xl font-bold mb-4">MOSS 2025 Accepted Papers</h1>
-        This webpage presents all accepted papers at the MOSS 2025 Workshop. The papers are grouped into topical clusters for easier navigation. We also provide keywords for each paper, which you can use to navigate to the corresponding paper. You can:
   
-        <ul className="text-sm text-gray-700 mb-6 list-disc list-inside space-y-1">
-          <li>Click on any topic listed below to jump directly to the corresponding set of papers.</li>
-          <li>Click on a keyword to filter and view all papers associated with that keyword.</li>
-          <li>Use the search bar to filter papers by title, author, or keyword.</li>
-          <li>Click 'Show Abstract' to view the full abstract of a paper.</li>
-          <li>If you have clicked on a keyword, click on it again to see all papers.</li>
-          <li>Click 'Reset' to clear all filters and return to the full list of papers.</li>
-        </ul>
+        <p className="text-gray-700 text-sm mb-4">
+          This webpage presents all accepted papers at the MOSS 2025 Workshop. The papers are grouped into topical clusters for easier navigation. You can:
+          <ul className="list-disc list-inside mt-2 space-y-1">
+            <li>Click a topic name to jump to the relevant group of papers.</li>
+            <li>Click a keyword to view all papers associated with it.</li>
+            <li>Use the search bar to filter papers by title, author, or keyword.</li>
+            <li>Click "Show Abstract" to expand the abstract for any paper.</li>
+            <li>Click "Reset" to clear filters and return to the full list.</li>
+          </ul>
+        </p>
   
         <div className="flex items-center gap-4 mb-6">
           <Input
@@ -1338,13 +1339,7 @@ export default function PaperBrowser() {
                             <p className="text-sm text-gray-600 italic">{paper.tldr}</p>
                             <p className="text-xs text-gray-500 flex flex-wrap gap-1">
                               Keywords: {paper.keywords.map((k, i) => (
-                                <button
-                                  key={i}
-                                  onClick={() => setActiveKeyword(current => current === k ? null : k)}
-                                  className="hover:underline text-blue-500"
-                                >
-                                  {k}{i < paper.keywords.length - 1 ? "," : ""}
-                                </button>
+                                <span key={i}>{k}{i < paper.keywords.length - 1 ? "," : ""}</span>
                               ))}
                             </p>
                             <a
