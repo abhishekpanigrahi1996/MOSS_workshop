@@ -830,7 +830,7 @@ const papers = [
             "Interpretability"
         ],
         "abstract": "Sparse Autoencoders (SAEs) are widely used to interpret neural networks by identifying meaningful concepts from their representations.  We show that each SAE imposes structural assumptions about how concepts are encoded in model representations, which in turn shapes what it can and cannot detect. We train SAEs on synthetic data with specific structure to show that SAEs fail to recover concepts when their assumptions are ignored, and we design a new SAE---called SpaDE---that enables the discovery of previously hidden concepts (those with heterogenous intrinsic dimensionality and nonlinear separation boundaries) and reinforces our theoretical insights.",
-        "topic": "Representation Learning",
+        "topic": "Representation Dynamics",
         "url": "https://openreview.net/forum?id=AKaoBzhIIF"
     },
     {
@@ -850,7 +850,7 @@ const papers = [
             "Sparse Autoencoders"
         ],
         "abstract": "Sparse autoencoders (SAEs) have recently become central tools for interpretability, leveraging dictionary learning principles to extract sparse, interpretable features from neural representations whose underlying structure is typically unknown. This paper evaluates SAEs in a controlled setting using MNIST, which reveals that current shallow architectures implicitly rely on a quasi-orthogonality assumption that limits the ability to extract correlated features. To move beyond this, we compare them with an iterative SAE that unrolls Matching Pursuit (MP-SAE), enabling the residual-guided extraction of correlated features that arise in hierarchical settings such as handwritten digit generation while guaranteeing monotonic improvement of the reconstruction as more atoms are selected.",
-        "topic": "Representation Learning",
+        "topic": "Representation Dynamics",
         "url": "https://openreview.net/forum?id=SLGftRJVUN"
     },
     {
