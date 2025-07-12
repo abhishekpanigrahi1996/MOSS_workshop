@@ -4,8 +4,6 @@ const Card = ({ children }) => (
   <div className="border rounded-2xl shadow p-4 bg-white">{children}</div>
 );
 
-const CardContent = ({ children }) => <div>{children}</div>;
-
 const Input = ({ className = "", ...props }) => (
   <input
     {...props}
@@ -28,6 +26,7 @@ const papers = [
 
 export default function PaperBrowser() {
   const [query, setQuery] = useState("");
+  const [openAbstract, setOpenAbstract] = useState(null);
 
   const filtered = papers.filter(paper =>
     paper.title.toLowerCase().includes(query.toLowerCase()) ||
@@ -47,15 +46,26 @@ export default function PaperBrowser() {
       <div className="grid gap-4">
         {filtered.map(paper => (
           <Card key={paper.id}>
-            <CardContent>
-              <a href={paper.url} target="_blank" rel="noopener noreferrer" className="text-xl font-semibold hover:underline">
+            <div className="flex flex-col gap-2">
+              <a
+                href={paper.url}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="text-lg font-semibold text-blue-600 hover:underline"
+              >
                 {paper.title}
               </a>
-              <p className="text-sm text-gray-600">Authors: {paper.authors.join(", ")}</p>
-              <p className="text-sm text-gray-500 italic mb-2">{paper.tldr}</p>
-              <p className="text-sm text-gray-800 mb-1">{paper.abstract}</p>
-              <p className="text-xs text-gray-500">Keywords: {paper.keywords.join(", ")}</p>
-            </CardContent>
+              <p className="text-sm text-gray-700">{paper.authors.join(", ")}</p>
+              <button
+                onClick={() => setOpenAbstract(openAbstract === paper.id ? null : paper.id)}
+                className="text-sm text-blue-500 hover:underline text-left w-fit"
+              >
+                {openAbstract === paper.id ? "Hide Abstract" : "Show Abstract"}
+              </button>
+              {openAbstract === paper.id && (
+                <p className="text-sm text-gray-800 border-t pt-2">{paper.abstract}</p>
+              )}
+            </div>
           </Card>
         ))}
       </div>
