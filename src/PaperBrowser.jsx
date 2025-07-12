@@ -1215,6 +1215,20 @@ const papers = [
   }
 ];
 
+
+const topicSummaries = {
+  "Representation Learning & Compression": "Focuses on how models learn, compress, and transfer knowledge representations, including ideas like embedding structure, length generalization, and measure-based clustering.",
+  "Optimization & Learning Dynamics": "Explores the dynamics of training neural networks—SGD behavior, curvature, learning rate schedules, convergence properties, and the impact of loss surface geometry.",
+  "Interpretability via Sparse Representations": "Investigates how sparse and structured representations can reveal concepts encoded in neural networks, with emphasis on interpretability, concept recovery, and matching pursuit.",
+  "Sequence Models & State Tracking": "Emphasizes theoretical and empirical work on time-series modeling, including recurrent structures, state-space models, and how sequence information is encoded and recovered.",
+  "Multi-modal Fusion & Robustness": "Investigates multi-modal learning strategies (e.g., vision + text), task-specific inductive biases, and tradeoffs between performance and robustness under limited data.",
+  "Synthetic Data & Inductive Bias Evaluation": "Proposes diagnostic datasets and synthetic benchmarks to probe part-whole hierarchies, data efficiency, and the inductive biases embedded in specific model architectures.",
+  "Diffusion Models & Iterative Refinement": "Focuses on masked/diffusion-based generative models, particularly inference-time improvement methods, iterative error correction, and diffusion-style decoding.",
+  "Attention Mechanisms & Positional Bias": "Analyzes transformer attention components—how masking and positional encodings introduce biases, impact generalization, and interact with structural tasks like planning.",
+  "In-Context Learning & Math Adaptation": "Investigates how LMs adapt to tasks without gradient updates using prompts, skill-based instructions, or short-context cues — especially in math and reasoning domains.",
+  "Trust, Bias & Explanation Fidelity": "Addresses trustworthiness, fairness, privacy, and fidelity in aligned LLMs — focusing on both behavior-level interventions and explanation optimization."
+};
+
 export default function PaperBrowser() {
   const [query, setQuery] = useState("");
   const [openAbstract, setOpenAbstract] = useState(null);
@@ -1236,18 +1250,24 @@ export default function PaperBrowser() {
         onChange={(e) => setQuery(e.target.value)}
       />
 
-      <div className="flex flex-wrap gap-3 mb-6">
-        {topics.map(topic => (
-          <a key={topic} href={`#${topic.replace(/\s+/g, "-")}`} className="text-blue-600 hover:underline">
-            {topic}
-          </a>
-        ))}
+      <div className="mb-6">
+        <h2 className="text-lg font-semibold mb-2">Topics</h2>
+        <ul className="list-disc pl-5 space-y-1">
+          {topics.map(topic => (
+            <li key={topic}>
+              <a href={`#${topic.replace(/\s+/g, "-")}`} className="text-blue-600 hover:underline">
+                {topic}
+              </a>
+              <span className="text-sm text-gray-600 ml-2">– {topicSummaries[topic]}</span>
+            </li>
+          ))}
+        </ul>
       </div>
 
       {topics.map(topic => (
-        <div key={topic} id={topic.replace(/\s+/g, "-")}
-             className="mb-8">
+        <div key={topic} id={topic.replace(/\s+/g, "-")} className="mb-8">
           <h2 className="text-xl font-semibold mb-3">{topic}</h2>
+          <p className="text-sm text-gray-600 mb-4">{topicSummaries[topic]}</p>
           <div className="grid gap-4">
             {filtered.filter(p => p.topic === topic).map(paper => (
               <Card key={paper.id}>
