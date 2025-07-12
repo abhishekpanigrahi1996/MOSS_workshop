@@ -1239,6 +1239,11 @@ export default function PaperBrowser() {
     return (
       <div className="p-6 max-w-5xl mx-auto w-full">
         <h1 className="text-2xl font-bold mb-4">MOSS 2025 Accepted Papers</h1>
+  
+        <p className="text-sm text-gray-700 mb-6">
+        This page presents all papers accepted to the MOSS 2025 workshop, systematically grouped by thematic topic to aid exploration and discovery. Each topic is accompanied by a brief description to contextualize the theme. You may click on any topic below to jump directly to the associated set of papers. 
+        </p>
+  
         <Input
           placeholder="Search by title, author, keyword..."
           className="mb-6"
@@ -1308,3 +1313,4 @@ export default function PaperBrowser() {
       </div>
     );
   }
+  
