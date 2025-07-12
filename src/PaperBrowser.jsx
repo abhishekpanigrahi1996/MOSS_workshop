@@ -1227,26 +1227,18 @@ const topicSummaries = {
 export default function PaperBrowser() {
     const [query, setQuery] = useState("");
     const [openAbstract, setOpenAbstract] = useState(null);
-    const [expandedKeyword, setExpandedKeyword] = useState(null);
+    const [activeKeyword, setActiveKeyword] = useState(null);
   
     const topics = [...new Set(papers.map(p => p.topic))];
-    const filtered = papers.filter(paper =>
-      paper.title.toLowerCase().includes(query.toLowerCase()) ||
-      paper.authors.some(a => a.toLowerCase().includes(query.toLowerCase())) ||
-      paper.keywords.some(k => k.toLowerCase().includes(query.toLowerCase()))
-    );
+    const keywords = [...new Set(papers.flatMap(p => p.keywords))].sort();
   
-    // Generate keyword map
-    const keywordMap = {};
-    papers.forEach(paper => {
-      paper.keywords.forEach(keyword => {
-        if (!keywordMap[keyword]) keywordMap[keyword] = [];
-        keywordMap[keyword].push(paper);
-      });
+    const filtered = papers.filter(paper => {
+      const matchesQuery = paper.title.toLowerCase().includes(query.toLowerCase()) ||
+        paper.authors.some(a => a.toLowerCase().includes(query.toLowerCase())) ||
+        paper.keywords.some(k => k.toLowerCase().includes(query.toLowerCase()));
+      const matchesKeyword = activeKeyword ? paper.keywords.includes(activeKeyword) : true;
+      return matchesQuery && matchesKeyword;
     });
-  
-    const allKeywords = Object.entries(keywordMap)
-      .sort((a, b) => b[1].length - a[1].length);
   
     return (
       <div className="p-6 max-w-5xl mx-auto w-full">
@@ -1281,39 +1273,16 @@ export default function PaperBrowser() {
         </div>
   
         <div className="mb-8">
-          <h2 className="text-lg font-semibold mb-2">Keyword Cloud</h2>
-          <div className="relative flex flex-wrap justify-center items-center gap-3 px-4">
-            {allKeywords.map(([keyword, paperList]) => (
-              <div
+          <h2 className="text-lg font-semibold mb-2">Keywords</h2>
+          <div className="flex flex-wrap gap-3 text-sm text-gray-700">
+            {keywords.map(keyword => (
+              <button
                 key={keyword}
-                className="relative cursor-pointer hover:scale-105 transition-transform"
-                style={{
-                  fontSize: `${12 + paperList.length * 2}px`,
-                  margin: `${Math.random() * 10}px`,
-                  transform: `rotate(${Math.random() * 4 - 2}deg)`
-                }}
+                onClick={() => setActiveKeyword(k => k === keyword ? null : keyword)}
+                className={`border px-2 py-1 rounded ${activeKeyword === keyword ? "bg-blue-200" : "bg-gray-100"}`}
               >
-                <button
-                  onClick={() => setExpandedKeyword(expandedKeyword === keyword ? null : keyword)}
-                  className="text-blue-700 hover:underline focus:outline-none"
-                >
-                  {keyword}
-                </button>
-                {expandedKeyword === keyword && (
-                  <ul className="absolute left-1/2 transform -translate-x-1/2 top-full mt-2 bg-white border p-2 rounded shadow z-10 w-64 max-h-64 overflow-auto">
-                    {paperList.map(paper => (
-                      <li key={paper.id}>
-                        <a
-                          href={`#paper-${paper.id}`}
-                          className="text-sm text-blue-600 hover:underline block"
-                        >
-                          {paper.title}
-                        </a>
-                      </li>
-                    ))}
-                  </ul>
-                )}
-              </div>
+                {keyword}
+              </button>
             ))}
           </div>
         </div>
@@ -1341,7 +1310,13 @@ export default function PaperBrowser() {
                           <p className="text-sm text-gray-600 italic">{paper.tldr}</p>
                           <p className="text-xs text-gray-500 flex flex-wrap gap-1">
                             Keywords: {paper.keywords.map((k, i) => (
-                              <span key={i} id={`keyword-${k.replace(/\s+/g, '-')}`}>{k}{i < paper.keywords.length - 1 ? "," : ""}</span>
+                              <button
+                                key={i}
+                                onClick={() => setActiveKeyword(k => k === k ? null : k)}
+                                className="hover:underline text-blue-500"
+                              >
+                                {k}{i < paper.keywords.length - 1 ? "," : ""}
+                              </button>
                             ))}
                           </p>
                           <a
@@ -1375,3 +1350,4 @@ export default function PaperBrowser() {
       </div>
     );
   }
+  
