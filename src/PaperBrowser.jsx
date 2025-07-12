@@ -1,7 +1,7 @@
 import { useState } from "react";
 
 const Card = ({ children }) => (
-  <div className="border rounded-2xl shadow p-4 bg-white ml-4">{children}</div>
+  <div className="border rounded-2xl shadow p-4 bg-white">{children}</div>
 );
 
 const Input = ({ className = "", ...props }) => (
@@ -48,7 +48,7 @@ export default function PaperBrowser() {
           <Card key={paper.id}>
             <div className="flex flex-col gap-2">
               <div className="flex justify-between items-start">
-                <div>
+                <div className="w-full">
                   <a
                     href={paper.url}
                     target="_blank"
@@ -61,12 +61,14 @@ export default function PaperBrowser() {
                   <p className="text-sm text-gray-600 italic">{paper.tldr}</p>
                   <p className="text-xs text-gray-500">Keywords: {paper.keywords.join(", ")}</p>
                 </div>
-                <button
-                  onClick={() => setOpenAbstract(openAbstract === paper.id ? null : paper.id)}
-                  className="text-sm text-blue-500 hover:underline ml-4 whitespace-nowrap"
-                >
-                  {openAbstract === paper.id ? "Hide Abstract" : "Show Abstract"}
-                </button>
+                <div className="ml-4">
+                  <button
+                    onClick={() => setOpenAbstract(openAbstract === paper.id ? null : paper.id)}
+                    className="text-sm text-blue-500 hover:underline whitespace-nowrap"
+                  >
+                    {openAbstract === paper.id ? "Hide Abstract" : "Show Abstract"}
+                  </button>
+                </div>
               </div>
               {openAbstract === paper.id && (
                 <p className="text-sm text-gray-800 border-t pt-2">{paper.abstract}</p>
