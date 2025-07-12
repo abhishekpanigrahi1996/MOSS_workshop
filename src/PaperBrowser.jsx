@@ -1240,20 +1240,39 @@ export default function PaperBrowser() {
       return matchesQuery && matchesKeyword;
     });
   
+    const resetFilters = () => {
+      setQuery("");
+      setActiveKeyword(null);
+    };
+  
     return (
       <div className="p-6 max-w-5xl mx-auto w-full">
         <h1 className="text-2xl font-bold mb-4">MOSS 2025 Accepted Papers</h1>
   
         <p className="text-sm text-gray-700 mb-6">
-          This page presents all papers accepted to the MOSS 2025 workshop, systematically grouped by thematic topic to aid exploration and discovery. Each topic is accompanied by a brief description to contextualize the theme. You may click on any topic below to jump directly to the associated set of papers.
+          This page presents all papers accepted to the MOSS 2025 workshop, systematically grouped by thematic topic to aid exploration and discovery. Each topic is accompanied by a brief description to contextualize the theme. You may click on any topic below to jump directly to the associated set of papers. We have additionally given a keyword cloud to help you navigate to specific set of papers using that keyword. 
+  
+  Navigation instructions:
+  - Click on any topic listed below to jump directly to the corresponding set of papers.
+  - Click on a keyword to filter and view all papers associated with that keyword.
+  - Use the search bar to filter papers by title, author, or keyword.
+  - Click 'Show Abstract' to view the full abstract of a paper.
+  - Click 'Reset' to clear all filters and return to the full list of papers. 
         </p>
   
-        <Input
-          placeholder="Search by title, author, keyword..."
-          className="mb-6"
-          value={query}
-          onChange={(e) => setQuery(e.target.value)}
-        />
+        <div className="flex items-center gap-4 mb-6">
+          <Input
+            placeholder="Search by title, author, keyword..."
+            value={query}
+            onChange={(e) => setQuery(e.target.value)}
+          />
+          <button
+            onClick={resetFilters}
+            className="bg-gray-200 hover:bg-gray-300 text-sm px-4 py-2 rounded"
+          >
+            Reset
+          </button>
+        </div>
   
         <div className="mb-6">
           <h2 className="text-lg font-semibold mb-2">Topics</h2>
@@ -1355,3 +1374,4 @@ export default function PaperBrowser() {
       </div>
     );
   }
+  
