@@ -1245,6 +1245,10 @@ export default function PaperBrowser() {
       });
     });
   
+    const topKeywords = Object.entries(keywordMap)
+      .sort((a, b) => b[1].length - a[1].length)
+      .slice(0, 30);
+  
     return (
       <div className="p-6 max-w-5xl mx-auto w-full">
         <h1 className="text-2xl font-bold mb-4">MOSS 2025 Accepted Papers</h1>
@@ -1279,18 +1283,18 @@ export default function PaperBrowser() {
   
         <div className="mb-8">
           <h2 className="text-lg font-semibold mb-2">Keyword Cloud</h2>
-          <div className="flex flex-wrap gap-3">
-            {Object.entries(keywordMap).map(([keyword, paperList]) => (
-              <div key={keyword} className="relative">
+          <div className="flex flex-wrap items-center gap-3">
+            {topKeywords.map(([keyword, paperList]) => (
+              <div key={keyword} className="relative inline-block">
                 <button
                   onClick={() => setExpandedKeyword(expandedKeyword === keyword ? null : keyword)}
-                  className="text-blue-700 hover:underline focus:outline-none"
+                  className="text-blue-700 hover:underline focus:outline-none whitespace-nowrap"
                   style={{ fontSize: `${12 + paperList.length * 2}px`, marginRight: "8px" }}
                 >
                   {keyword}
                 </button>
                 {expandedKeyword === keyword && (
-                  <ul className="absolute bg-white border p-2 rounded shadow z-10 mt-1 w-64">
+                  <ul className="absolute bg-white border p-2 rounded shadow z-10 mt-1 w-64 max-h-64 overflow-auto">
                     {paperList.map(paper => (
                       <li key={paper.id}>
                         <a
@@ -1329,12 +1333,11 @@ export default function PaperBrowser() {
                           </a>
                           <p className="text-sm text-gray-700">{paper.authors.join(", ")}</p>
                           <p className="text-sm text-gray-600 italic">{paper.tldr}</p>
-                          <p className="text-xs text-gray-500">
+                          <p className="text-xs text-gray-500 flex flex-wrap gap-1">
                             Keywords: {paper.keywords.map((k, i) => (
                               <span
                                 key={i}
                                 id={`keyword-${k.replace(/\s+/g, '-')}`}
-                                className="mr-1"
                               >
                                 {k}{i < paper.keywords.length - 1 ? "," : ""}
                               </span>
