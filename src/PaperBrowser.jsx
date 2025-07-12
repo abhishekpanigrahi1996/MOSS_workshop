@@ -1224,7 +1224,6 @@ const topicSummaries = {
 'Trust, Fairness & Explanation':'Ensuring models behave as intended: intervention fidelity when steering LLMs, weak‑to‑strong transfer of trustworthiness, pitfalls when turning explanation metrics into losses, robustness trade‑offs in prompt vs. fine‑tune adaptation, and critical evaluation of visual prompting.',
 };
 
-
 export default function PaperBrowser() {
     const [query, setQuery] = useState("");
     const [openAbstract, setOpenAbstract] = useState(null);
@@ -1236,12 +1235,21 @@ export default function PaperBrowser() {
       paper.keywords.some(k => k.toLowerCase().includes(query.toLowerCase()))
     );
   
+    // Generate keyword map
+    const keywordMap = {};
+    papers.forEach(paper => {
+      paper.keywords.forEach(keyword => {
+        if (!keywordMap[keyword]) keywordMap[keyword] = [];
+        keywordMap[keyword].push(paper.id);
+      });
+    });
+  
     return (
       <div className="p-6 max-w-5xl mx-auto w-full">
         <h1 className="text-2xl font-bold mb-4">MOSS 2025 Accepted Papers</h1>
   
         <p className="text-sm text-gray-700 mb-6">
-          This page presents all papers accepted to the MOSS 2025 workshop, systematically grouped by thematic topic to aid exploration and discovery. Each topic is accompanied by a brief description to contextualize the theme. You may click on any topic below to jump directly to the associated set of papers.
+          This page presents all papers accepted to the MOSS 2025 workshop, systematically grouped by thematic topic to aid exploration and discovery. Each topic is accompanied by a brief description to contextualize the theme. You may click on any topic below to jump directly to the associated set of papers.. You can click on a topic below to jump directly to the papers under that theme.
         </p>
   
         <Input
@@ -1268,6 +1276,22 @@ export default function PaperBrowser() {
           </ul>
         </div>
   
+        <div className="mb-8">
+          <h2 className="text-lg font-semibold mb-2">Keyword Cloud</h2>
+          <div className="flex flex-wrap gap-3">
+            {Object.entries(keywordMap).map(([keyword, ids]) => (
+              <a
+                key={keyword}
+                href={`#keyword-${keyword.replace(/\s+/g, '-')}`}
+                className="text-blue-700 hover:underline"
+                style={{ fontSize: `${12 + ids.length * 2}px` }}
+              >
+                {keyword}
+              </a>
+            ))}
+          </div>
+        </div>
+  
         {topics.map(topic => (
           <div key={topic} id={topic.replace(/\s+/g, "-")} className="mb-8">
             <h2 className="text-xl font-semibold mb-3">{topic}</h2>
@@ -1289,7 +1313,11 @@ export default function PaperBrowser() {
                           </a>
                           <p className="text-sm text-gray-700">{paper.authors.join(", ")}</p>
                           <p className="text-sm text-gray-600 italic">{paper.tldr}</p>
-                          <p className="text-xs text-gray-500">Keywords: {paper.keywords.join(", ")}</p>
+                          <p className="text-xs text-gray-500">
+                            Keywords: {paper.keywords.map((k, i) => (
+                              <span key={i} id={`keyword-${k.replace(/\s+/g, '-')}`}>{k}{i < paper.keywords.length - 1 ? ", " : ""}</span>
+                            ))}
+                          </p>
                           <a
                             href={`https://github.com/abhishekpanigrahi1996/MOSS/tree/main/submissions/submission-${paper.id}`}
                             target="_blank"
