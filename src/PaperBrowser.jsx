@@ -1225,6 +1225,7 @@ const topicSummaries = {
 'Trust, Fairness & Calibration':'Focuses on ethical and calibration-oriented improvements in LMs. Topics include explanation fidelity, fairness, privacy protection, and robust intervention design.',
 };
 
+
 export default function PaperBrowser() {
     const [query, setQuery] = useState("");
     const [openAbstract, setOpenAbstract] = useState(null);
@@ -1241,7 +1242,7 @@ export default function PaperBrowser() {
         <h1 className="text-2xl font-bold mb-4">MOSS 2025 Accepted Papers</h1>
   
         <p className="text-sm text-gray-700 mb-6">
-        This page presents all papers accepted to the MOSS 2025 workshop, systematically grouped by thematic topic to aid exploration and discovery. Each topic is accompanied by a brief description to contextualize the theme. You may click on any topic below to jump directly to the associated set of papers. 
+          This page presents all papers accepted to the MOSS 2025 workshop, systematically grouped by thematic topic to aid exploration and discovery. Each topic is accompanied by a brief description to contextualize the theme. You may click on any topic below to jump directly to the associated set of papers.. You can click on a topic below to jump directly to the papers under that theme.
         </p>
   
         <Input
@@ -1290,6 +1291,14 @@ export default function PaperBrowser() {
                           <p className="text-sm text-gray-700">{paper.authors.join(", ")}</p>
                           <p className="text-sm text-gray-600 italic">{paper.tldr}</p>
                           <p className="text-xs text-gray-500">Keywords: {paper.keywords.join(", ")}</p>
+                          <a
+                            href={`https://github.com/abhishekpanigrahi1996/MOSS/tree/main/submissions/submission-${paper.id}`}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            className="text-sm text-blue-500 hover:underline"
+                          >
+                            Code link
+                          </a>
                         </div>
                         <div className="ml-4">
                           <button
