@@ -1,7 +1,7 @@
 import { useState } from "react";
 
 const Card = ({ children }) => (
-  <div className="border rounded-2xl shadow p-4 bg-white">{children}</div>
+  <div className="border rounded-2xl shadow p-4 bg-white ml-4">{children}</div>
 );
 
 const Input = ({ className = "", ...props }) => (
@@ -47,21 +47,27 @@ export default function PaperBrowser() {
         {filtered.map(paper => (
           <Card key={paper.id}>
             <div className="flex flex-col gap-2">
-              <a
-                href={paper.url}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="text-lg font-semibold text-blue-600 hover:underline"
-              >
-                {paper.title}
-              </a>
-              <p className="text-sm text-gray-700">{paper.authors.join(", ")}</p>
-              <button
-                onClick={() => setOpenAbstract(openAbstract === paper.id ? null : paper.id)}
-                className="text-sm text-blue-500 hover:underline text-left w-fit"
-              >
-                {openAbstract === paper.id ? "Hide Abstract" : "Show Abstract"}
-              </button>
+              <div className="flex justify-between items-start">
+                <div>
+                  <a
+                    href={paper.url}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="text-lg font-semibold text-blue-600 hover:underline"
+                  >
+                    {paper.title}
+                  </a>
+                  <p className="text-sm text-gray-700">{paper.authors.join(", ")}</p>
+                  <p className="text-sm text-gray-600 italic">{paper.tldr}</p>
+                  <p className="text-xs text-gray-500">Keywords: {paper.keywords.join(", ")}</p>
+                </div>
+                <button
+                  onClick={() => setOpenAbstract(openAbstract === paper.id ? null : paper.id)}
+                  className="text-sm text-blue-500 hover:underline ml-4 whitespace-nowrap"
+                >
+                  {openAbstract === paper.id ? "Hide Abstract" : "Show Abstract"}
+                </button>
+              </div>
               {openAbstract === paper.id && (
                 <p className="text-sm text-gray-800 border-t pt-2">{paper.abstract}</p>
               )}
