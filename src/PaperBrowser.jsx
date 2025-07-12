@@ -1227,6 +1227,7 @@ const topicSummaries = {
 export default function PaperBrowser() {
     const [query, setQuery] = useState("");
     const [openAbstract, setOpenAbstract] = useState(null);
+    const [expandedKeyword, setExpandedKeyword] = useState(null);
   
     const topics = [...new Set(papers.map(p => p.topic))];
     const filtered = papers.filter(paper =>
@@ -1240,7 +1241,7 @@ export default function PaperBrowser() {
     papers.forEach(paper => {
       paper.keywords.forEach(keyword => {
         if (!keywordMap[keyword]) keywordMap[keyword] = [];
-        keywordMap[keyword].push(paper.id);
+        keywordMap[keyword].push(paper);
       });
     });
   
@@ -1249,7 +1250,7 @@ export default function PaperBrowser() {
         <h1 className="text-2xl font-bold mb-4">MOSS 2025 Accepted Papers</h1>
   
         <p className="text-sm text-gray-700 mb-6">
-          This page presents all papers accepted to the MOSS 2025 workshop, systematically grouped by thematic topic to aid exploration and discovery. Each topic is accompanied by a brief description to contextualize the theme. You may click on any topic below to jump directly to the associated set of papers.. You can click on a topic below to jump directly to the papers under that theme.
+          This page presents all papers accepted to the MOSS 2025 workshop, systematically grouped by thematic topic to aid exploration and discovery. Each topic is accompanied by a brief description to contextualize the theme. You may click on any topic below to jump directly to the associated set of papers.
         </p>
   
         <Input
@@ -1279,15 +1280,30 @@ export default function PaperBrowser() {
         <div className="mb-8">
           <h2 className="text-lg font-semibold mb-2">Keyword Cloud</h2>
           <div className="flex flex-wrap gap-3">
-            {Object.entries(keywordMap).map(([keyword, ids]) => (
-              <a
-                key={keyword}
-                href={`#keyword-${keyword.replace(/\s+/g, '-')}`}
-                className="text-blue-700 hover:underline"
-                style={{ fontSize: `${12 + ids.length * 2}px` }}
-              >
-                {keyword}
-              </a>
+            {Object.entries(keywordMap).map(([keyword, paperList]) => (
+              <div key={keyword} className="relative">
+                <button
+                  onClick={() => setExpandedKeyword(expandedKeyword === keyword ? null : keyword)}
+                  className="text-blue-700 hover:underline focus:outline-none"
+                  style={{ fontSize: `${12 + paperList.length * 2}px`, marginRight: "8px" }}
+                >
+                  {keyword}
+                </button>
+                {expandedKeyword === keyword && (
+                  <ul className="absolute bg-white border p-2 rounded shadow z-10 mt-1 w-64">
+                    {paperList.map(paper => (
+                      <li key={paper.id}>
+                        <a
+                          href={`#paper-${paper.id}`}
+                          className="text-sm text-blue-600 hover:underline block"
+                        >
+                          {paper.title}
+                        </a>
+                      </li>
+                    ))}
+                  </ul>
+                )}
+              </div>
             ))}
           </div>
         </div>
@@ -1298,7 +1314,7 @@ export default function PaperBrowser() {
             <p className="text-sm text-gray-600 mb-4">{topicSummaries[topic]}</p>
             <ul className="list-disc list-inside ml-6 space-y-4">
               {filtered.filter(p => p.topic === topic).map(paper => (
-                <li key={paper.id}>
+                <li key={paper.id} id={`paper-${paper.id}`}>
                   <Card>
                     <div className="flex flex-col gap-2">
                       <div className="flex justify-between items-start">
@@ -1315,7 +1331,13 @@ export default function PaperBrowser() {
                           <p className="text-sm text-gray-600 italic">{paper.tldr}</p>
                           <p className="text-xs text-gray-500">
                             Keywords: {paper.keywords.map((k, i) => (
-                              <span key={i} id={`keyword-${k.replace(/\s+/g, '-')}`}>{k}{i < paper.keywords.length - 1 ? ", " : ""}</span>
+                              <span
+                                key={i}
+                                id={`keyword-${k.replace(/\s+/g, '-')}`}
+                                className="mr-1"
+                              >
+                                {k}{i < paper.keywords.length - 1 ? "," : ""}
+                              </span>
                             ))}
                           </p>
                           <a
