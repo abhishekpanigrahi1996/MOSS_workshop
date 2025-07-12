@@ -1278,7 +1278,7 @@ export default function PaperBrowser() {
             {keywords.map(keyword => (
               <button
                 key={keyword}
-                onClick={() => setActiveKeyword(k => k === keyword ? null : keyword)}
+                onClick={() => setActiveKeyword(current => current === keyword ? null : keyword)}
                 className={`border px-2 py-1 rounded ${activeKeyword === keyword ? "bg-blue-200" : "bg-gray-100"}`}
               >
                 {keyword}
@@ -1287,67 +1287,71 @@ export default function PaperBrowser() {
           </div>
         </div>
   
-        {topics.map(topic => (
-          <div key={topic} id={topic.replace(/\s+/g, "-")} className="mb-8">
-            <h2 className="text-xl font-semibold mb-3">{topic}</h2>
-            <p className="text-sm text-gray-600 mb-4">{topicSummaries[topic]}</p>
-            <ul className="list-disc list-inside ml-6 space-y-4">
-              {filtered.filter(p => p.topic === topic).map(paper => (
-                <li key={paper.id} id={`paper-${paper.id}`}>
-                  <Card>
-                    <div className="flex flex-col gap-2">
-                      <div className="flex justify-between items-start">
-                        <div className="w-full">
-                          <a
-                            href={paper.url}
-                            target="_blank"
-                            rel="noopener noreferrer"
-                            className="text-lg font-semibold text-blue-600 hover:underline"
-                          >
-                            {paper.title}
-                          </a>
-                          <p className="text-sm text-gray-700">{paper.authors.join(", ")}</p>
-                          <p className="text-sm text-gray-600 italic">{paper.tldr}</p>
-                          <p className="text-xs text-gray-500 flex flex-wrap gap-1">
-                            Keywords: {paper.keywords.map((k, i) => (
-                              <button
-                                key={i}
-                                onClick={() => setActiveKeyword(k => k === k ? null : k)}
-                                className="hover:underline text-blue-500"
-                              >
-                                {k}{i < paper.keywords.length - 1 ? "," : ""}
-                              </button>
-                            ))}
-                          </p>
-                          <a
-                            href={`https://github.com/abhishekpanigrahi1996/MOSS/tree/main/submissions/submission-${paper.id}`}
-                            target="_blank"
-                            rel="noopener noreferrer"
-                            className="text-sm text-blue-500 hover:underline"
-                          >
-                            Code link
-                          </a>
+        {topics.map(topic => {
+          const topicPapers = filtered.filter(p => p.topic === topic);
+          if (topicPapers.length === 0) return null;
+  
+          return (
+            <div key={topic} id={topic.replace(/\s+/g, "-")} className="mb-8">
+              <h2 className="text-xl font-semibold mb-3">{topic}</h2>
+              <p className="text-sm text-gray-600 mb-4">{topicSummaries[topic]}</p>
+              <ul className="list-disc list-inside ml-6 space-y-4">
+                {topicPapers.map(paper => (
+                  <li key={paper.id} id={`paper-${paper.id}`}>
+                    <Card>
+                      <div className="flex flex-col gap-2">
+                        <div className="flex justify-between items-start">
+                          <div className="w-full">
+                            <a
+                              href={paper.url}
+                              target="_blank"
+                              rel="noopener noreferrer"
+                              className="text-lg font-semibold text-blue-600 hover:underline"
+                            >
+                              {paper.title}
+                            </a>
+                            <p className="text-sm text-gray-700">{paper.authors.join(", ")}</p>
+                            <p className="text-sm text-gray-600 italic">{paper.tldr}</p>
+                            <p className="text-xs text-gray-500 flex flex-wrap gap-1">
+                              Keywords: {paper.keywords.map((k, i) => (
+                                <button
+                                  key={i}
+                                  onClick={() => setActiveKeyword(current => current === k ? null : k)}
+                                  className="hover:underline text-blue-500"
+                                >
+                                  {k}{i < paper.keywords.length - 1 ? "," : ""}
+                                </button>
+                              ))}
+                            </p>
+                            <a
+                              href={`https://github.com/abhishekpanigrahi1996/MOSS/tree/main/submissions/submission-${paper.id}`}
+                              target="_blank"
+                              rel="noopener noreferrer"
+                              className="text-sm text-blue-500 hover:underline"
+                            >
+                              Code link
+                            </a>
+                          </div>
+                          <div className="ml-4">
+                            <button
+                              onClick={() => setOpenAbstract(openAbstract === paper.id ? null : paper.id)}
+                              className="text-sm text-blue-500 hover:underline whitespace-nowrap"
+                            >
+                              {openAbstract === paper.id ? "Hide Abstract" : "Show Abstract"}
+                            </button>
+                          </div>
                         </div>
-                        <div className="ml-4">
-                          <button
-                            onClick={() => setOpenAbstract(openAbstract === paper.id ? null : paper.id)}
-                            className="text-sm text-blue-500 hover:underline whitespace-nowrap"
-                          >
-                            {openAbstract === paper.id ? "Hide Abstract" : "Show Abstract"}
-                          </button>
-                        </div>
+                        {openAbstract === paper.id && (
+                          <p className="text-sm text-gray-800 border-t pt-2">{paper.abstract}</p>
+                        )}
                       </div>
-                      {openAbstract === paper.id && (
-                        <p className="text-sm text-gray-800 border-t pt-2">{paper.abstract}</p>
-                      )}
-                    </div>
-                  </Card>
-                </li>
-              ))}
-            </ul>
-          </div>
-        ))}
+                    </Card>
+                  </li>
+                ))}
+              </ul>
+            </div>
+          );
+        })}
       </div>
     );
   }
-  
