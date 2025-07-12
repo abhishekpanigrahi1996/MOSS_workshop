@@ -1245,9 +1245,8 @@ export default function PaperBrowser() {
       });
     });
   
-    const topKeywords = Object.entries(keywordMap)
-      .sort((a, b) => b[1].length - a[1].length)
-      .slice(0, 30);
+    const allKeywords = Object.entries(keywordMap)
+      .sort((a, b) => b[1].length - a[1].length);
   
     return (
       <div className="p-6 max-w-5xl mx-auto w-full">
@@ -1283,18 +1282,25 @@ export default function PaperBrowser() {
   
         <div className="mb-8">
           <h2 className="text-lg font-semibold mb-2">Keyword Cloud</h2>
-          <div className="flex flex-wrap items-center gap-3">
-            {topKeywords.map(([keyword, paperList]) => (
-              <div key={keyword} className="relative inline-block">
+          <div className="relative flex flex-wrap justify-center items-center gap-3 px-4">
+            {allKeywords.map(([keyword, paperList]) => (
+              <div
+                key={keyword}
+                className="relative cursor-pointer hover:scale-105 transition-transform"
+                style={{
+                  fontSize: `${12 + paperList.length * 2}px`,
+                  margin: `${Math.random() * 10}px`,
+                  transform: `rotate(${Math.random() * 4 - 2}deg)`
+                }}
+              >
                 <button
                   onClick={() => setExpandedKeyword(expandedKeyword === keyword ? null : keyword)}
-                  className="text-blue-700 hover:underline focus:outline-none whitespace-nowrap"
-                  style={{ fontSize: `${12 + paperList.length * 2}px`, marginRight: "8px" }}
+                  className="text-blue-700 hover:underline focus:outline-none"
                 >
                   {keyword}
                 </button>
                 {expandedKeyword === keyword && (
-                  <ul className="absolute bg-white border p-2 rounded shadow z-10 mt-1 w-64 max-h-64 overflow-auto">
+                  <ul className="absolute left-1/2 transform -translate-x-1/2 top-full mt-2 bg-white border p-2 rounded shadow z-10 w-64 max-h-64 overflow-auto">
                     {paperList.map(paper => (
                       <li key={paper.id}>
                         <a
@@ -1335,12 +1341,7 @@ export default function PaperBrowser() {
                           <p className="text-sm text-gray-600 italic">{paper.tldr}</p>
                           <p className="text-xs text-gray-500 flex flex-wrap gap-1">
                             Keywords: {paper.keywords.map((k, i) => (
-                              <span
-                                key={i}
-                                id={`keyword-${k.replace(/\s+/g, '-')}`}
-                              >
-                                {k}{i < paper.keywords.length - 1 ? "," : ""}
-                              </span>
+                              <span key={i} id={`keyword-${k.replace(/\s+/g, '-')}`}>{k}{i < paper.keywords.length - 1 ? "," : ""}</span>
                             ))}
                           </p>
                           <a
@@ -1374,4 +1375,3 @@ export default function PaperBrowser() {
       </div>
     );
   }
-  
