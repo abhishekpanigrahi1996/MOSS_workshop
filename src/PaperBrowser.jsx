@@ -1,7 +1,12 @@
 import { useState } from "react";
 
+import { useState } from "react";
+
 const Card = ({ children }) => (
-  <div className="border rounded-2xl shadow p-4 bg-white">{children}</div>
+  <div className="border rounded-2xl shadow p-4 bg-white w-full flex gap-2 items-start">
+    <div className="text-sm mt-1">•</div>
+    <div className="flex-1">{children}</div>
+  </div>
 );
 
 const Input = ({ className = "", ...props }) => (
@@ -10,6 +15,7 @@ const Input = ({ className = "", ...props }) => (
     className={`border p-2 rounded w-full ${className}`.trim()}
   />
 );
+
 
 const papers = [
     {
