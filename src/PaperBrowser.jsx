@@ -1224,13 +1224,115 @@ const topicSummaries = {
 'Trust, Fairness & Explanation':'Ensuring models behave as intended: intervention fidelity when steering LLMs, weak‑to‑strong transfer of trustworthiness, pitfalls when turning explanation metrics into losses, robustness trade‑offs in prompt vs. fine‑tune adaptation, and critical evaluation of visual prompting.',
 };
 
+
+
+const groupedKeywords = {
+    "Architecture": [
+      "Attention", "Kolmogorov–Arnold networks", "Attention-Free", "Encoder Models", "MLP Architecture",
+      "Linear Recurrent Neural Networks", "Logic gate networks", "Shallow Neural Networks", "SSMs",
+      "perceptron", "capsule models", "Soft Expert Routing", "Byte-Level Modeling", "model architecture",
+      "CNN", "CNNs"
+    ],
+    "Alignment/Societal considerations": [
+      "Alignment", "Social Bias", "Trustworthiness", "Privacy", "Fairness", "personalization"
+    ],
+    "Data/task": [
+      "Synthetic Data", "Synthetic Tasks", "Synthetic dataset", "State-tracking", "factual recall",
+      "flip-flops", "data", "Procedural Data", "path-finding", "GMM", "permutations", "Small-Scale Experiments"
+    ],
+    "Diffusion": [
+      "Block Diffusion", "Discrete Diffusion Models", "LLaDA", "Masked Diffusion Models",
+      "Text-to-Image Diffusion Models", "Neural SDEs"
+    ],
+    "Efficiency": [
+      "Computational Efficiency", "Efficient serving", "data efficiency", "Faster training",
+      "efficient training", "parameter efficiency", "low-resource NLP", "pruning"
+    ],
+    "Generalization": [
+      "Length Generalization", "length generalisation", "length generalization", "OOD Robustness",
+      "OOD genearalization", "out-of-distribution robustness", "Weak-to-strong generalization",
+      "generalization", "Robustness", "memorization", "Adversarial Robustness"
+    ],
+    "Generative models": [
+      "Generative Classifiers", "Generative Models"
+    ],
+    "Graph": [
+      "Factor Graphs", "Knowledge Graph", "Message Passing"
+    ],
+    "Interpretability": [
+      "Explanations", "Feature Attribtution Explanations", "Interpretability", "Mechanistic Interpretability",
+      "Steering", "Sparse Autoencoders", "interpretability", "mechanistic interpretability", "superposition"
+    ],
+    "Inductive biases": [
+      "Inductive Bias", "Inductive Biases", "Inductive Priors", "inductive bias", "Smoother minima"
+    ],
+    "Inference": [
+      "Inference", "Inference-Time Guidance", "Inference-Time Scaling", "test-time adaption",
+      "prompt engineering", "Visual Prompting", "Decoding", "few-shot prompting", "multi token sampling",
+      "Sampling", "hypergeometric sampling", "beam search", "parallel exploration"
+    ],
+    "In-context": [
+      "In-context learning", "in-context learning"
+    ],
+    "Language model": [
+      "LLM", "LLMs", "LLMs system behavior", "LLM theory", "Language Models", "Large Language Models",
+      "Masked Language Models", "small LLMs", "small language models", "language models",
+      "large language models", "large models", "Transformers", "Small language models", "transformer",
+      "transformer model", "attention", "transformer models", "transformers", "Multi-modal Fusion",
+      "next-token prediction", "foundation models", "science of language models", "Long Context",
+      "position bias", "positional encoding", "Self-Correction", "Token selection", "attention map",
+      "attention mechanism"
+    ],
+    "Optimization/learning dynamics": [
+      "Gradient Descent", "Gradient descent", "LR schedule", "Learning dynamics", "Optimization",
+      "SGD dynamics", "Initial Noise Optimization", "dynamics", "Newton’s method", "training dynamics",
+      "transformer training dynamics", "Warmup Stable Decay", "Early stopping", "learning rate",
+      "initialization", "non-convex optimization", "non-smooth optimization", "optimisation",
+      "negative correlation", "Abrupt learning", "gradient descent", "Loss reweighting"
+    ],
+    "New phenomenon": [
+      "emergence", "grokking", "attention glitches", "mode collapse"
+    ],
+    "Reinforcement learning": [
+      "RL", "Reinforcement Learning", "Qwen2.5-Math-PRM", "PRM", "World Models",
+      "reinforcement learning", "Process Reward Models", "policy optimization"
+    ],
+    "Reasoning": [
+      "Algorithmic Reasoning", "Chess", "Mathematical Reasoning", "Reasoning", "Qwen2.5-Math-PRM",
+      "reasoning", "symbolic reasoning", "chain of continuous thought", "chain-of-thought",
+      "Iterative Refinement", "planning", "algorithmic reasoning", "latent space reasoning", "Self-Correction"
+    ],
+    "Representation": [
+      "Representation Engineering", "Representation Learning", "data representation",
+      "latent representations", "representation learning", "neural representations"
+    ],
+    "Scaling": [
+      "power law", "Scaling Law", "model scaling"
+    ],
+    "System": [
+      "LLMs system behavior", "B-Trees", "Cache management", "VRAM-Limited GPUs", "Databases"
+    ],
+    "Theory": [
+      "LLM theory", "Online Learning", "Viability Theory", "koopman theory", "learning theory",
+      "theory-informed learning", "deep learning theory", "machine learning theory", "expressivity",
+      "Dictionary Learning", "Dynamical Low-Rank Aproximation", "Conformal prediction", "Compression",
+      "Low-Rank", "Measure-to-measure flow map", "Model Capacity", "stochastic differential equations",
+      "algebraic geometry", "Error Correction", "quantile regression", "calibration"
+    ]
+  };
+  
+  
+  const flatKeywords = new Set(
+    Object.values(groupedKeywords).flat()
+  );
+
+
 export default function PaperBrowser() {
     const [query, setQuery] = useState("");
     const [openAbstract, setOpenAbstract] = useState(null);
     const [activeKeyword, setActiveKeyword] = useState(null);
   
     const topics = [...new Set(papers.map(p => p.topic))];
-    const keywords = [...new Set(papers.flatMap(p => p.keywords))].sort();
   
     const filtered = papers.filter(paper => {
       const matchesQuery = paper.title.toLowerCase().includes(query.toLowerCase()) ||
@@ -1293,17 +1395,22 @@ export default function PaperBrowser() {
   
         <div className="mb-8">
           <h2 className="text-lg font-semibold mb-2">Keywords</h2>
-          <div className="flex flex-wrap gap-3 text-sm text-gray-700 mb-2">
-            {keywords.map(keyword => (
-              <button
-                key={keyword}
-                onClick={() => setActiveKeyword(current => current === keyword ? null : keyword)}
-                className={`border px-2 py-1 rounded ${activeKeyword === keyword ? "bg-blue-200" : "bg-gray-100"}`}
-              >
-                {keyword}
-              </button>
-            ))}
-          </div>
+          {Object.entries(groupedKeywords).map(([group, keywords]) => (
+            <div key={group} className="mb-4">
+              <h3 className="font-semibold text-gray-800 mb-2">{group}</h3>
+              <div className="flex flex-wrap gap-2 text-sm text-gray-700">
+                {keywords.map(keyword => (
+                  <button
+                    key={keyword}
+                    onClick={() => setActiveKeyword(current => current === keyword ? null : keyword)}
+                    className={`border px-2 py-1 rounded ${activeKeyword === keyword ? "bg-blue-200" : "bg-gray-100"}`}
+                  >
+                    {keyword}
+                  </button>
+                ))}
+              </div>
+            </div>
+          ))}
           <button
             onClick={resetFilters}
             className="bg-gray-200 hover:bg-gray-300 text-sm px-3 py-1 rounded"
@@ -1337,10 +1444,8 @@ export default function PaperBrowser() {
                             </a>
                             <p className="text-sm text-gray-700">{paper.authors.join(", ")}</p>
                             <p className="text-sm text-gray-600 italic">{paper.tldr}</p>
-                            <p className="text-xs text-gray-500 flex flex-wrap gap-1">
-                              Keywords: {paper.keywords.map((k, i) => (
-                                <span key={i}>{k}{i < paper.keywords.length - 1 ? "," : ""}</span>
-                              ))}
+                            <p className="text-xs text-gray-500">
+                              Keywords: {paper.keywords.filter(k => flatKeywords.has(k)).join(", ")}
                             </p>
                             <a
                               href={`https://github.com/abhishekpanigrahi1996/MOSS/tree/main/submissions/submission-${paper.id}`}
@@ -1374,3 +1479,4 @@ export default function PaperBrowser() {
       </div>
     );
   }
+  
