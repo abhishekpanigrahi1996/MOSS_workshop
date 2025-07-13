@@ -1,11 +1,11 @@
 import { useState } from "react";
 
 const Card = ({ children }) => (
-  <div className="border rounded-2xl shadow p-4 bg-white w-full flex gap-4 items-start">
-    <div className="text-xl leading-6 mt-1">•</div>
-    <div className="flex-1">{children}</div>
-  </div>
-);
+    <div className="border rounded-2xl shadow p-4 bg-white w-full flex items-start gap-3">
+      <div className="text-2xl leading-none mt-1 font-bold text-gray-700">•</div>
+      <div className="flex-1 space-y-1">{children}</div>
+    </div>
+  );
 
 const Input = ({ className = "", ...props }) => (
   <input
