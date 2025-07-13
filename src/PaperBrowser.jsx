@@ -1325,7 +1325,6 @@ const groupedKeywords = {
   const flatKeywords = new Set(
     Object.values(groupedKeywords).flat()
   );
-
   export default function PaperBrowser() {
     const [selectedGroup, setSelectedGroup] = useState(null);
     const [expandedPaperIds, setExpandedPaperIds] = useState(new Set());
@@ -1353,41 +1352,58 @@ const groupedKeywords = {
       topicGroups[paper.topic].push(paper);
     });
   
+    const topicList = Object.entries(topicSummaries);
+  
     return (
       <div className="space-y-6">
         <div className="border p-4 rounded-xl bg-gray-50">
-          <p className="text-sm">
-            We present all accepted papers at MOSS 2025, grouped by high-level topics. You can:
+          <p className="text-sm mb-2">
+            Welcome to the MOSS 2025 Accepted Papers Browser. We have split papers in two ways, first we have split papers into a general high-level research topics. Second, we have grouped all the keywords into keyword clouds, and a paper can belong to multiple keyword clouds, depending on the keywords provided by the authors. You can:
           </p>
-          <ul className="list-disc list-inside text-sm">
-            <li>Click on a grouped keyword below to filter papers related to it.</li>
-            <li>Click "Reset Filters" to view all papers again.</li>
+          <ul className="list-disc list-inside text-sm mb-4">
+            <li>Browse papers grouped by high-level research topics.</li>
+            <li>Click a topic below to navigate to its section.</li>
+            <li>Use the grouped keyword cloud to filter papers by thematic relevance.</li>
+            <li>Reset filters to view all accepted papers again.</li>
           </ul>
-        </div>
   
-        <div className="border rounded-xl p-4 bg-white">
-          <h3 className="text-md font-semibold mb-2">Keyword Cloud (Grouped)</h3>
-          <div className="flex flex-wrap gap-2">
-            {Object.keys(groupedKeywords).map(group => (
+          <div className="mb-4">
+            <h3 className="text-md font-semibold mb-2">Jump to Topic</h3>
+            <ul className="flex flex-wrap gap-2 text-sm">
+              {topicList.map(([topic]) => (
+                <li key={topic}>
+                  <a href={`#${topic.replace(/\s+/g, "-")}`} className="text-blue-600 hover:underline">
+                    {topic}
+                  </a>
+                </li>
+              ))}
+            </ul>
+          </div>
+  
+          <div className="border rounded-xl p-4 bg-white">
+            <h3 className="text-md font-semibold mb-2">Keyword Cloud (Grouped)</h3>
+            <div className="flex flex-wrap gap-2">
+              {Object.keys(groupedKeywords).map(group => (
+                <button
+                  key={group}
+                  onClick={() => setSelectedGroup(group)}
+                  className={`px-3 py-1 rounded-full text-sm border ${selectedGroup === group ? "bg-blue-100 border-blue-400" : "bg-white"}`}
+                >
+                  {group}
+                </button>
+              ))}
               <button
-                key={group}
-                onClick={() => setSelectedGroup(group)}
-                className={`px-3 py-1 rounded-full text-sm border ${selectedGroup === group ? "bg-blue-100 border-blue-400" : "bg-white"}`}
+                onClick={() => setSelectedGroup(null)}
+                className="px-3 py-1 rounded-full text-sm border bg-white"
               >
-                {group}
+                Reset Filters
               </button>
-            ))}
-            <button
-              onClick={() => setSelectedGroup(null)}
-              className="px-3 py-1 rounded-full text-sm border bg-white"
-            >
-              Reset Filters
-            </button>
+            </div>
           </div>
         </div>
   
         {Object.entries(topicGroups).map(([topic, papersInTopic]) => (
-          <div key={topic} className="space-y-2">
+          <div key={topic} className="space-y-2" id={topic.replace(/\s+/g, "-")}>
             <h2 className="text-xl font-bold mt-6">{topic}</h2>
             {topicSummaries[topic] && (
               <p className="text-sm text-gray-600 mb-2">{topicSummaries[topic]}</p>
