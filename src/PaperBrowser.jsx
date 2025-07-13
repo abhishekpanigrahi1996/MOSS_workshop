@@ -1,7 +1,5 @@
 import { useState } from "react";
 
-import { useState } from "react";
-
 const Card = ({ children }) => (
   <div className="border rounded-2xl shadow p-4 bg-white w-full flex gap-2 items-start">
     <div className="text-sm mt-1">•</div>
