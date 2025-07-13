@@ -1441,12 +1441,16 @@ const groupedKeywords = {
               {papersInTopic.map(paper => (
                 <Card key={paper.id}>
                   <h2 className="text-base font-normal mb-1">
-                    <a href={paper.url} target="_blank" rel="noopener noreferrer" className="text-blue-600 font-medium hover:underline">
+                    <a href={paper.url} target="_blank" rel="noopener noreferrer" className="text-blue-600 text-sm hover:underline">
                       {paper.title}
                     </a>
                   </h2>
                   <p className="text-sm mb-1">{paper.authors.join(", ")}</p>
   
+                  <div className="text-xs text-gray-700">
+                    Keywords: {paper.keywords?.join(", ")}
+                  </div>
+
                   <button
                     className="text-xs text-blue-600 underline mb-1"
                     onClick={() => toggleAbstract(paper.id)}
@@ -1457,10 +1461,6 @@ const groupedKeywords = {
                   {expandedPaperIds.has(paper.id) && (
                     <p className="text-sm italic mb-2">{paper.abstract}</p>
                   )}
-  
-                  <div className="text-xs text-gray-700">
-                    Keywords: {paper.keywords?.join(", ")}
-                  </div>
                 </Card>
               ))}
             </ul>
