@@ -1326,156 +1326,83 @@ const groupedKeywords = {
     Object.values(groupedKeywords).flat()
   );
 
-
-export default function PaperBrowser() {
-    const [query, setQuery] = useState("");
-    const [openAbstract, setOpenAbstract] = useState(null);
-    const [activeKeyword, setActiveKeyword] = useState(null);
+  export default function PaperBrowser() {
+    const [selectedGroup, setSelectedGroup] = useState(null);
+    const [expandedPaperIds, setExpandedPaperIds] = useState(new Set());
   
-    const topics = [...new Set(papers.map(p => p.topic))];
-  
-    const filtered = papers.filter(paper => {
-      const matchesQuery = paper.title.toLowerCase().includes(query.toLowerCase()) ||
-        paper.authors.some(a => a.toLowerCase().includes(query.toLowerCase())) ||
-        paper.keywords.some(k => k.toLowerCase().includes(query.toLowerCase()));
-      const matchesKeyword = activeKeyword ? paper.keywords.includes(activeKeyword) : true;
-      return matchesQuery && matchesKeyword;
-    });
-  
-    const resetFilters = () => {
-      setQuery("");
-      setActiveKeyword(null);
+    const toggleAbstract = (id) => {
+      const updated = new Set(expandedPaperIds);
+      if (updated.has(id)) {
+        updated.delete(id);
+      } else {
+        updated.add(id);
+      }
+      setExpandedPaperIds(updated);
     };
   
+    const filteredPapers = selectedGroup
+      ? papers.filter(paper =>
+          paper.keywords?.some(kw => groupedKeywords[selectedGroup]?.includes(kw))
+        )
+      : papers;
+  
     return (
-      <div className="p-6 max-w-5xl mx-auto w-full">
-        <h1 className="text-2xl font-bold mb-4">MOSS 2025 Accepted Papers</h1>
-  
-        <p className="text-gray-700 text-sm mb-4">
-          This webpage presents all accepted papers at the MOSS 2025 Workshop. The papers are grouped into topical clusters for easier navigation. You can:
-          <ul className="list-disc list-inside mt-2 space-y-1">
-            <li>Click a topic name to jump to the relevant group of papers.</li>
-            <li>Click a keyword to view all papers associated with it.</li>
-            <li>Use the search bar to filter papers by title, author, or keyword.</li>
-            <li>Click "Show Abstract" to expand the abstract for any paper.</li>
-            <li>Click "Reset" to clear filters and return to the full list.</li>
-          </ul>
-        </p>
-  
-        <div className="flex items-center gap-4 mb-6">
-          <Input
-            placeholder="Search by title, author, keyword..."
-            value={query}
-            onChange={(e) => setQuery(e.target.value)}
-          />
-          <button
-            onClick={resetFilters}
-            className="bg-gray-200 hover:bg-gray-300 text-sm px-4 py-2 rounded"
-          >
-            Reset
-          </button>
-        </div>
-  
-        <div className="mb-6">
-          <h2 className="text-lg font-semibold mb-2">Topics</h2>
-          <ul className="space-y-2 ml-2">
-            {topics.map(topic => (
-              <li key={topic} className="flex items-start gap-2">
-                <span className="mt-1 w-2 h-2 rounded-full bg-black"></span>
-                <div>
-                  <a href={`#${topic.replace(/\s+/g, "-")}`} className="text-blue-600 font-medium hover:underline">
-                    {topic}
-                  </a>
-                  <div className="text-sm text-gray-600">{topicSummaries[topic]}</div>
-                </div>
-              </li>
-            ))}
+      <div className="space-y-6">
+        <div className="border p-4 rounded-xl bg-gray-50">
+          <p className="text-sm">
+            We present all accepted papers at MOSS 2025, grouped by high-level topics. You can:
+          </p>
+          <ul className="list-disc list-inside text-sm">
+            <li>Click on a topic to view papers associated with it.</li>
+            <li>Click "Reset Filters" to show all papers.</li>
           </ul>
         </div>
   
-        <div className="mb-8">
-          <h2 className="text-lg font-semibold mb-2">Keywords</h2>
-          {Object.entries(groupedKeywords).map(([group, keywords]) => (
-            <div key={group} className="mb-4">
-              <h3 className="font-semibold text-gray-800 mb-2">{group}</h3>
-              <div className="flex flex-wrap gap-2 text-sm text-gray-700">
-                {keywords.map(keyword => (
-                  <button
-                    key={keyword}
-                    onClick={() => setActiveKeyword(current => current === keyword ? null : keyword)}
-                    className={`border px-2 py-1 rounded ${activeKeyword === keyword ? "bg-blue-200" : "bg-gray-100"}`}
-                  >
-                    {keyword}
-                  </button>
-                ))}
-              </div>
-            </div>
+        <div className="flex flex-wrap gap-2">
+          {Object.keys(groupedKeywords).map(group => (
+            <button
+              key={group}
+              onClick={() => setSelectedGroup(group)}
+              className={`px-3 py-1 rounded-full text-sm border ${selectedGroup === group ? "bg-blue-100 border-blue-400" : "bg-white"}`}
+            >
+              {group}
+            </button>
           ))}
           <button
-            onClick={resetFilters}
-            className="bg-gray-200 hover:bg-gray-300 text-sm px-3 py-1 rounded"
+            onClick={() => setSelectedGroup(null)}
+            className="px-3 py-1 rounded-full text-sm border bg-white"
           >
             Reset Filters
           </button>
         </div>
   
-        {topics.map(topic => {
-          const topicPapers = filtered.filter(p => p.topic === topic);
-          if (topicPapers.length === 0) return null;
+        <div className="grid gap-4">
+          {filteredPapers.map(paper => (
+            <Card key={paper.id}>
+              <h2 className="text-lg font-semibold mb-1">{paper.title}</h2>
+              <p className="text-sm mb-1">{paper.authors.join(", ")}</p>
   
-          return (
-            <div key={topic} id={topic.replace(/\s+/g, "-")} className="mb-8">
-              <h2 className="text-xl font-semibold mb-3">{topic}</h2>
-              <p className="text-sm text-gray-600 mb-4">{topicSummaries[topic]}</p>
-              <ul className="list-disc list-inside ml-6 space-y-4">
-                {topicPapers.map(paper => (
-                  <li key={paper.id} id={`paper-${paper.id}`}>
-                    <Card>
-                      <div className="flex flex-col gap-2">
-                        <div className="flex justify-between items-start">
-                          <div className="w-full">
-                            <a
-                              href={paper.url}
-                              target="_blank"
-                              rel="noopener noreferrer"
-                              className="text-lg font-semibold text-blue-600 hover:underline"
-                            >
-                              {paper.title}
-                            </a>
-                            <p className="text-sm text-gray-700">{paper.authors.join(", ")}</p>
-                            <p className="text-sm text-gray-600 italic">{paper.tldr}</p>
-                            <p className="text-xs text-gray-500">
-                              Keywords: {paper.keywords.filter(k => flatKeywords.has(k)).join(", ")}
-                            </p>
-                            <a
-                              href={`https://github.com/abhishekpanigrahi1996/MOSS/tree/main/submissions/submission-${paper.id}`}
-                              target="_blank"
-                              rel="noopener noreferrer"
-                              className="text-sm text-blue-500 hover:underline"
-                            >
-                              Code link
-                            </a>
-                          </div>
-                          <div className="ml-4">
-                            <button
-                              onClick={() => setOpenAbstract(openAbstract === paper.id ? null : paper.id)}
-                              className="text-sm text-blue-500 hover:underline whitespace-nowrap"
-                            >
-                              {openAbstract === paper.id ? "Hide Abstract" : "Show Abstract"}
-                            </button>
-                          </div>
-                        </div>
-                        {openAbstract === paper.id && (
-                          <p className="text-sm text-gray-800 border-t pt-2">{paper.abstract}</p>
-                        )}
-                      </div>
-                    </Card>
-                  </li>
+              <button
+                className="text-xs text-blue-600 underline mb-1"
+                onClick={() => toggleAbstract(paper.id)}
+              >
+                {expandedPaperIds.has(paper.id) ? "Hide Abstract" : "Show Abstract"}
+              </button>
+  
+              {expandedPaperIds.has(paper.id) && (
+                <p className="text-sm italic mb-2">{paper.abstract}</p>
+              )}
+  
+              <div className="flex flex-wrap gap-1">
+                {paper.keywords?.map((kw, i) => (
+                  <span key={i} className="bg-gray-100 px-2 py-1 rounded text-xs">
+                    {kw}
+                  </span>
                 ))}
-              </ul>
-            </div>
-          );
-        })}
+              </div>
+            </Card>
+          ))}
+        </div>
       </div>
     );
   }
