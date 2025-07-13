@@ -1440,8 +1440,8 @@ const groupedKeywords = {
             <ul className="space-y-4">
               {papersInTopic.map(paper => (
                 <Card key={paper.id}>
-                  <h2 className="text-base font-normal mb-1">
-                    <a href={paper.url} target="_blank" rel="noopener noreferrer" className="text-blue-600 text-sm hover:underline">
+                  <h2 className="text-sm font-medium text-blue-600 mb-1">
+                    <a href={paper.url} target="_blank" rel="noopener noreferrer" className="hover:underline">
                       {paper.title}
                     </a>
                   </h2>
