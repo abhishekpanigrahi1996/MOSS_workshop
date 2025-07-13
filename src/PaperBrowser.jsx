@@ -1,8 +1,8 @@
 import { useState } from "react";
 
 const Card = ({ children }) => (
-  <div className="border rounded-2xl shadow p-4 bg-white w-full flex gap-2 items-start">
-    <div className="text-sm mt-1">•</div>
+  <div className="border rounded-2xl shadow p-4 bg-white w-full flex gap-4 items-start">
+    <div className="text-xl leading-6 mt-1">•</div>
     <div className="flex-1">{children}</div>
   </div>
 );
@@ -13,7 +13,6 @@ const Input = ({ className = "", ...props }) => (
     className={`border p-2 rounded w-full ${className}`.trim()}
   />
 );
-
 
 const papers = [
     {
@@ -1414,7 +1413,7 @@ const groupedKeywords = {
             )}
             {papersInTopic.map(paper => (
               <Card key={paper.id}>
-                <h2 className="text-lg font-semibold mb-1">
+                <h2 className="text-base font-normal mb-1">
                   <a href={paper.url} target="_blank" rel="noopener noreferrer" className="text-blue-600 hover:underline">
                     {paper.title}
                   </a>
