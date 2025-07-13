@@ -1451,6 +1451,15 @@ const groupedKeywords = {
                     Keywords: {paper.keywords?.join(", ")}
                   </div>
 
+                  <a
+                              href={`https://github.com/abhishekpanigrahi1996/MOSS/tree/main/submissions/submission-${paper.id}`}
+                              target="_blank"
+                              rel="noopener noreferrer"
+                              className="text-sm text-blue-500 hover:underline"
+                            >
+                              Code link
+                            </a>
+
                   <button
                     className="text-xs text-blue-600 underline mb-1"
                     onClick={() => toggleAbstract(paper.id)}
