@@ -1346,6 +1346,13 @@ const groupedKeywords = {
         )
       : papers;
   
+    // Group filtered papers by topic
+    const topicGroups = {};
+    filteredPapers.forEach(paper => {
+      if (!topicGroups[paper.topic]) topicGroups[paper.topic] = [];
+      topicGroups[paper.topic].push(paper);
+    });
+  
     return (
       <div className="space-y-6">
         <div className="border p-4 rounded-xl bg-gray-50">
@@ -1353,56 +1360,65 @@ const groupedKeywords = {
             We present all accepted papers at MOSS 2025, grouped by high-level topics. You can:
           </p>
           <ul className="list-disc list-inside text-sm">
-            <li>Click on a topic to view papers associated with it.</li>
-            <li>Click "Reset Filters" to show all papers.</li>
+            <li>Click on a grouped keyword below to filter papers related to it.</li>
+            <li>Click "Reset Filters" to view all papers again.</li>
           </ul>
         </div>
   
-        <div className="flex flex-wrap gap-2">
-          {Object.keys(groupedKeywords).map(group => (
-            <button
-              key={group}
-              onClick={() => setSelectedGroup(group)}
-              className={`px-3 py-1 rounded-full text-sm border ${selectedGroup === group ? "bg-blue-100 border-blue-400" : "bg-white"}`}
-            >
-              {group}
-            </button>
-          ))}
-          <button
-            onClick={() => setSelectedGroup(null)}
-            className="px-3 py-1 rounded-full text-sm border bg-white"
-          >
-            Reset Filters
-          </button>
-        </div>
-  
-        <div className="grid gap-4">
-          {filteredPapers.map(paper => (
-            <Card key={paper.id}>
-              <h2 className="text-lg font-semibold mb-1">{paper.title}</h2>
-              <p className="text-sm mb-1">{paper.authors.join(", ")}</p>
-  
+        <div className="border rounded-xl p-4 bg-white">
+          <h3 className="text-md font-semibold mb-2">Keyword Cloud (Grouped)</h3>
+          <div className="flex flex-wrap gap-2">
+            {Object.keys(groupedKeywords).map(group => (
               <button
-                className="text-xs text-blue-600 underline mb-1"
-                onClick={() => toggleAbstract(paper.id)}
+                key={group}
+                onClick={() => setSelectedGroup(group)}
+                className={`px-3 py-1 rounded-full text-sm border ${selectedGroup === group ? "bg-blue-100 border-blue-400" : "bg-white"}`}
               >
-                {expandedPaperIds.has(paper.id) ? "Hide Abstract" : "Show Abstract"}
+                {group}
               </button>
-  
-              {expandedPaperIds.has(paper.id) && (
-                <p className="text-sm italic mb-2">{paper.abstract}</p>
-              )}
-  
-              <div className="flex flex-wrap gap-1">
-                {paper.keywords?.map((kw, i) => (
-                  <span key={i} className="bg-gray-100 px-2 py-1 rounded text-xs">
-                    {kw}
-                  </span>
-                ))}
-              </div>
-            </Card>
-          ))}
+            ))}
+            <button
+              onClick={() => setSelectedGroup(null)}
+              className="px-3 py-1 rounded-full text-sm border bg-white"
+            >
+              Reset Filters
+            </button>
+          </div>
         </div>
+  
+        {Object.entries(topicGroups).map(([topic, papersInTopic]) => (
+          <div key={topic} className="space-y-2">
+            <h2 className="text-xl font-bold mt-6">{topic}</h2>
+            {topicSummaries[topic] && (
+              <p className="text-sm text-gray-600 mb-2">{topicSummaries[topic]}</p>
+            )}
+            {papersInTopic.map(paper => (
+              <Card key={paper.id}>
+                <h2 className="text-lg font-semibold mb-1">
+                  <a href={paper.url} target="_blank" rel="noopener noreferrer" className="text-blue-600 hover:underline">
+                    {paper.title}
+                  </a>
+                </h2>
+                <p className="text-sm mb-1">{paper.authors.join(", ")}</p>
+  
+                <button
+                  className="text-xs text-blue-600 underline mb-1"
+                  onClick={() => toggleAbstract(paper.id)}
+                >
+                  {expandedPaperIds.has(paper.id) ? "Hide Abstract" : "Show Abstract"}
+                </button>
+  
+                {expandedPaperIds.has(paper.id) && (
+                  <p className="text-sm italic mb-2">{paper.abstract}</p>
+                )}
+  
+                <div className="text-xs text-gray-700">
+                  Keywords: {paper.keywords?.join(", ")}
+                </div>
+              </Card>
+            ))}
+          </div>
+        ))}
       </div>
     );
   }
