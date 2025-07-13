@@ -1,7 +1,10 @@
 import { useState } from "react";
 
 const Card = ({ children }) => (
-  <div className="border rounded-2xl shadow p-4 bg-white">{children}</div>
+  <li className="border rounded-2xl shadow p-4 bg-white w-full flex gap-4 items-start">
+    <div className="text-2xl leading-6 mt-1">•</div>
+    <div className="flex-1">{children}</div>
+  </li>
 );
 
 const Input = ({ className = "", ...props }) => (
